@@ -74,7 +74,7 @@ class CurlDownloadStrategy < AbstractDownloadStrategy
   end
 
   def tarball_path
-    @tarball_path ||= Pathname.new("/Users/stallman/gnuhubdata/homebrew_dowloads/#{name}-#{resource.version}#{ext}")
+    @tarball_path ||= Pathname.new("/Users/stallman/gnuhubdata/homebrew_downloads/#{name}-#{resource.version}#{ext}")
   end
 
   def temporary_path

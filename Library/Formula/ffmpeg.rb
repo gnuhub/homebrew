@@ -2,15 +2,16 @@ require "formula"
 
 class Ffmpeg < Formula
   homepage "https://ffmpeg.org/"
-  url "https://www.ffmpeg.org/releases/ffmpeg-2.4.3.tar.bz2"
-  sha1 "a2f05df7ea3e65ede2898e055b0c6615accfb1b3"
+  url "https://www.ffmpeg.org/releases/ffmpeg-2.4.4.tar.bz2"
+  sha1 "c0a0829fbb4cf423eed77f39d3661d1a34ac7c35"
 
   head "git://git.videolan.org/ffmpeg.git"
 
   bottle do
-    sha1 "da5376cb5a7942f694ddc71db7e0f62e121ac7a2" => :yosemite
-    sha1 "7d47d99d0b127914141fa071450fa0808649edae" => :mavericks
-    sha1 "aebc5376516664a78896928b8249dae8443fdd92" => :mountain_lion
+    revision 1
+    sha1 "a6f4a232907734d78a426c46041c32269e8d6301" => :yosemite
+    sha1 "cb7409a55dca59a06620f183afb065c567279e4f" => :mavericks
+    sha1 "a319c01274737129edc6d84c4ae9d198676ce3c3" => :mountain_lion
   end
 
   option "without-x264", "Disable H.264 encoder"
@@ -19,7 +20,7 @@ class Ffmpeg < Formula
   option "without-qtkit", "Disable deprecated QuickTime framework"
 
   option "with-rtmpdump", "Enable RTMP protocol"
-  option "with-libvo-aacenc", "Enable VisualOn AAC encoder"
+  option "without-libvo-aacenc", "Enable VisualOn AAC encoder"
   option "with-libass", "Enable ASS/SSA subtitle format"
   option "with-opencore-amr", "Enable Opencore AMR NR/WB audio format"
   option "with-openjpeg", "Enable JPEG 2000 image format"
@@ -30,25 +31,27 @@ class Ffmpeg < Formula
   option "with-fdk-aac", "Enable the Fraunhofer FDK AAC library"
   option "with-libvidstab", "Enable vid.stab support for video stabilization"
   option "with-x265", "Enable x265 encoder"
+  option "with-libsoxr", "Enable the soxr resample library"
 
   depends_on "pkg-config" => :build
 
-  # manpages won"t be built without texi2html
+  # manpages won't be built without texi2html
   depends_on "texi2html" => :build if MacOS.version >= :mountain_lion
   depends_on "yasm" => :build
 
   depends_on "x264" => :recommended
-  depends_on "faac" => :recommended
   depends_on "lame" => :recommended
+  depends_on "libvo-aacenc" => :recommended
   depends_on "xvid" => :recommended
 
+  depends_on "faac" => :optional
+  depends_on "fontconfig" => :optional
   depends_on "freetype" => :optional
   depends_on "theora" => :optional
   depends_on "libvorbis" => :optional
   depends_on "libvpx" => :optional
   depends_on "rtmpdump" => :optional
   depends_on "opencore-amr" => :optional
-  depends_on "libvo-aacenc" => :optional
   depends_on "libass" => :optional
   depends_on "openjpeg" => :optional
   depends_on "sdl" if build.with? "ffplay"
@@ -59,9 +62,11 @@ class Ffmpeg < Formula
   depends_on "frei0r" => :optional
   depends_on "libcaca" => :optional
   depends_on "libbluray" => :optional
+  depends_on "libsoxr" => :optional
   depends_on "libquvi" => :optional
   depends_on "libvidstab" => :optional
   depends_on "x265" => :optional
+  depends_on "openssl" => :optional
 
   def install
     args = ["--prefix=#{prefix}",
@@ -69,10 +74,8 @@ class Ffmpeg < Formula
             "--enable-pthreads",
             "--enable-gpl",
             "--enable-version3",
-            "--enable-nonfree",
             "--enable-hardcoded-tables",
             "--enable-avresample",
-            "--enable-vda",
             "--cc=#{ENV.cc}",
             "--host-cflags=#{ENV.cflags}",
             "--host-ldflags=#{ENV.ldflags}"
@@ -83,6 +86,7 @@ class Ffmpeg < Formula
     args << "--enable-libmp3lame" if build.with? "lame"
     args << "--enable-libxvid" if build.with? "xvid"
 
+    args << "--enable-libfontconfig" if build.with? "fontconfig"
     args << "--enable-libfreetype" if build.with? "freetype"
     args << "--enable-libtheora" if build.with? "theora"
     args << "--enable-libvorbis" if build.with? "libvorbis"
@@ -99,6 +103,7 @@ class Ffmpeg < Formula
     args << "--enable-libopus" if build.with? "opus"
     args << "--enable-frei0r" if build.with? "frei0r"
     args << "--enable-libcaca" if build.with? "libcaca"
+    args << "--enable-libsoxr" if build.with? "libsoxr"
     args << "--enable-libquvi" if build.with? "libquvi"
     args << "--enable-libvidstab" if build.with? "libvidstab"
     args << "--enable-libx265" if build.with? "x265"
@@ -108,6 +113,22 @@ class Ffmpeg < Formula
       args << "--enable-libopenjpeg"
       args << "--disable-decoder=jpeg2000"
       args << "--extra-cflags=" + %x[pkg-config --cflags libopenjpeg].chomp
+    end
+
+    # These librares are GPL-incompatible, and require ffmpeg be built with
+    # the "--enable-nonfree" flag, which produces unredistributable libraries
+    if %w[faac fdk-aac openssl].any? {|f| build.with? f}
+      args << "--enable-nonfree"
+    end
+
+    # A bug in a dispatch header on 10.10, included via CoreFoundation,
+    # prevents GCC from building VDA support. GCC has no probles on
+    # 10.9 and earlier.
+    # See: https://github.com/Homebrew/homebrew/issues/33741
+    if MacOS.version < :yosemite || ENV.compiler == :clang
+      args << "--enable-vda"
+    else
+      args << "--disable-vda"
     end
 
     # For 32-bit compilation under gcc 4.2, see:

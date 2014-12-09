@@ -29,7 +29,7 @@ A shell script for an command named `extcmd` should be named `brew-extcmd`. This
 	</tr>
   <tr>
     <td>HOMEBREW_CACHE</td>
-		<td>Where Homebrew caches downloaded tarballs to, typically <code>~/Library/Caches/Homebrew</code>. </td>
+		<td>Where Homebrew caches downloaded tarballs to, typically <code>/Library/Caches/Homebrew</code>. </td>
 	</tr>
   <tr>
     <td>HOMEBREW_CELLAR</td>
@@ -56,6 +56,29 @@ These commands have been contributed by Homebrew users but are not included in t
 
 >*NOTE:* They are largely untested, and as always, be careful about running untested code on your machine.
 
+### brew-livecheck
+> Check if there is a new upstream version of a formula.
+>
+> See the [`README`](https://github.com/youtux/homebrew-livecheck/blob/master/README.md) for more info and usage.
+>
+> Install using:
+> ```
+> $ brew tap youtux/livecheck
+> ```
+
+### brew-any-tap
+
+> Like `brew tap` but works on *any* git repository, whether public or private, on GitHub or not.
+>
+> Install using (ironically enough) `brew tap`:
+>
+> ```
+> brew tap telemachus/anytap
+> brew install brew-any-tap
+> ```
+>
+> See the  [`README`](https://github.com/telemachus/homebrew-anytap/blob/master/README.md) for further explanation and examples of use.
+
 ### brew-cask
 
 >Install .app and other "Drag to install" packages from Homebrew.
@@ -73,15 +96,13 @@ These commands have been contributed by Homebrew users but are not included in t
 
 >You can install manually or using `brew tap`:
 > ```
-> $ brew install telemachus/desc/brew-desc
+> $ brew tap telemachus/desc
 > ```
 
-### brew-gem and brew-pip
->Install any gem pip package into a self-contained Homebrew cellar location
+### brew-gem
+>Install any gem package into a self-contained Homebrew cellar location: <https://github.com/sportngin/brew-gem>
 >
->[https://github.com/josh/brew-gem](https://github.com/josh/brew-gem), [https://github.com/josh/brew-pip](https://github.com/josh/brew-pip)
->
->*Note:* These can also be installed with `brew install brew-gem` and `brew install brew-pip`
+>*Note:* This can also be installed with `brew install brew-gem`.
 
 ### brew-growl
 >Get Growl notifications for Homebrew https://github.com/secondplanet/brew-growl
@@ -93,6 +114,6 @@ These commands have been contributed by Homebrew users but are not included in t
 >Simple support to start formulae using launchctl, has out of the box support for any formula which defines `startup_plist` (e.g. mysql, postgres, redis u.v.m.): [https://gist.github.com/766293](https://gist.github.com/766293)
 
 ## SEE ALSO
-Homebrew Wiki: <http://wiki.github.com/Homebrew/homebrew/>
+Homebrew Docs: <https://github.com/Homebrew/homebrew/tree/master/share/doc/homebrew>
 
 `brew`(1), `which`(1), `grep`(1), [`ronn`(1)](http://rtomayko.github.com/ronn/)

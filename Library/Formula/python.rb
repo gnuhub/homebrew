@@ -14,6 +14,8 @@ class Python < Formula
     sha1 "f3708ea1d1f736527c428f0026aa42499c489fe2" => :mountain_lion
   end
 
+  # Please don't add a wide/ucs4 option as it won't be accepted.
+  # More details in: https://github.com/Homebrew/homebrew/pull/32368
   option :universal
   option "quicktest", "Run `make quicktest` after the build (for devs; may fail)"
   option "with-brewed-tk", "Use Homebrew's Tk (has optional Cocoa and threads support)"
@@ -321,7 +323,7 @@ class Python < Formula
     They will install into the site-package directory
       #{site_packages}
 
-    See: https://github.com/Homebrew/homebrew/wiki/Homebrew-and-Python
+    See: https://github.com/Homebrew/homebrew/blob/master/share/doc/homebrew/Homebrew-and-Python.md
     EOS
   end
 

@@ -83,7 +83,6 @@ class VCSDownloadStrategy < AbstractDownloadStrategy
     "__UNKNOWN__"
   end
 
-<<<<<<< HEAD
   def cache_filename
     "#{name}--#{cache_tag}"
   end
@@ -93,10 +92,6 @@ class VCSDownloadStrategy < AbstractDownloadStrategy
   end
 
   def clone_repo
-=======
-  def tarball_path
-    @tarball_path ||= Pathname.new("/Users/stallman/gnuhubdata/homebrew_dowloads/#{name}-#{resource.version}#{ext}")
->>>>>>> change to my dirs
   end
 
   def update

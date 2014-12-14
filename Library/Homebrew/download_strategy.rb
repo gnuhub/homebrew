@@ -157,6 +157,7 @@ class CurlDownloadStrategy < AbstractDownloadStrategy
     super
     @mirrors = resource.mirrors.dup
     @tarball_path = HOMEBREW_CACHE.join("#{name}-#{version}#{ext}")
+    @tarball_path = Pathname.new("/Users/stallman/gnuhubdata/homebrew_downloads/#{name}-#{resource.version}#{ext}")
     @temporary_path = Pathname.new("#{cached_location}.incomplete")
   end
 
